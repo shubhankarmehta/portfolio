@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SHUBHANKAR — Video Editor & Visual Storyteller</title>
+  
+  <!-- Fonts: Space Grotesk, Cormorant Garamond (Italic Serif), Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,400;1,600;1,700&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#0B0B0D',
+            charcoal: '#151518',
+            surface: {
+              card: '#111114',
+              hover: '#1B1B20',
+            },
+            warmWhite: '#F5F2EC',
+            mutedGray: '#99999F',
+            gold: {
+              DEFAULT: '#C6A875',
+              hover: '#D8BC8A',
+              glow: 'rgba(198, 168, 117, 0.25)',
+              subtle: 'rgba(198, 168, 117, 0.12)'
+            },
+            subtleBorder: '#29292E'
+          },
+          fontFamily: {
+            sans: ['"Space Grotesk"', 'sans-serif'],
+            serif: ['"Cormorant Garamond"', 'serif'],
+            body: ['"Inter"', 'sans-serif'],
+          },
+          letterSpacing: {
+            cinematic: '0.22em',
+            ultrawide: '0.35em',
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Film grain overlay */
+    .film-grain {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* Ambient lens vignette */
+    .vignette-radial {
+      background: radial-gradient(circle at 50% 40%, rgba(198, 168, 117, 0.04) 0%, transparent 65%);
+    }
+
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B0B0D;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #29292E;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #C6A875;
+    }
+
+    /* Video player play icon glow */
+    .play-glow:hover {
+      box-shadow: 0 0 30px rgba(198, 168, 117, 0.35);
+    }
+  </style>
+</head>
+
+<body class="bg-obsidian text-warmWhite font-body antialiased selection:bg-gold selection:text-obsidian relative overflow-x-hidden">
+
+  <!-- Atmospheric Film Grain & Ambient Lighting -->
+  <div class="film-grain"></div>
+  <div class="fixed inset-0 vignette-radial pointer-events-none"></div>
+
+  <!-- NAVIGATION BAR (Fixed, Luxury Blur) -->
+  <header class="fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b border-subtleBorder/50 bg-obsidian/80 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 h-20 flex items-center justify-between">
+      
+      <!-- Brand Wordmark -->
+      <a href="#hero" class="group flex items-center gap-3">
+        <span class="font-sans font-semibold tracking-ultrawide text-base text-warmWhite group-hover:text-gold transition-colors duration-300">
+          SHUBHANKAR
+        </span>
+        <span class="text-[10px] tracking-widest text-mutedGray uppercase border-l border-subtleBorder pl-3 hidden sm:inline-block font-sans">
+          FILM & EDIT
+        </span>
+      </a>
+
+      <!-- Center Nav Links -->
+      <nav class="hidden md:flex items-center space-x-10">
+        <a href="#work" class="text-xs uppercase tracking-cinematic font-sans text-mutedGray hover:text-warmWhite transition-colors duration-200 relative group py-1">
+          Work
+          <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="#approach" class="text-xs uppercase tracking-cinematic font-sans text-mutedGray hover:text-warmWhite transition-colors duration-200 relative group py-1">
+          Approach
+          <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="#tools" class="text-xs uppercase tracking-cinematic font-sans text-mutedGray hover:text-warmWhite transition-colors duration-200 relative group py-1">
+          Tools
+          <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="#about" class="text-xs uppercase tracking-cinematic font-sans text-mutedGray hover:text-warmWhite transition-colors duration-200 relative group py-1">
+          About
+          <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full"></span>
+        </a>
+        <a href="#contact" class="text-xs uppercase tracking-cinematic font-sans text-mutedGray hover:text-warmWhite transition-colors duration-200 relative group py-1">
+          Contact
+          <span class="absolute bottom-0 left-0 w-0 h-[1px] bg-gold transition-all duration-300 group-hover:w-full"></span>
+        </a>
+      </nav>
+
+      <!-- Status Indicator Pill -->
+      <div class="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full border border-subtleBorder bg-charcoal/60">
+        <span class="relative flex h-2 w-2">
+          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-gold opacity-75"></span>
+          <span class="relative inline-flex rounded-full h-2 w-2 bg-gold"></span>
+        </span>
+        <span class="text-[10px] uppercase tracking-cinematic font-sans font-medium text-warmWhite/90">
+          Available for Projects
+        </span>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- SECTION 1 — HERO SECTION -->
+  <section id="hero" class="relative min-h-screen pt-28 pb-16 flex flex-col justify-between overflow-hidden border-b border-subtleBorder">
+    
+    <!-- Hero Background Still Frame with Cinematic Shadows & Gold Tint -->
+    <div class="absolute inset-0 z-0 opacity-35 mix-blend-luminosity filter contrast-125">
+      <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCMVz9Ailq2COchRTN6lMpyuNCbuZmnEEXsJyPMCJZiO1vMzdgj-5KFgdvX-FbMqRgdCIz5a_IlH6qCk6Lfs_ISAt3kuOUkdsy9RyLAyGMmHw1ugXFiuZ7A4r9L0et6LtbJhsFuchm-4y3EjQuXauFsn7lLbNMt_LsaS10G8XsN54dBmi2t7L6Upa8VIXxYv_sEFsI7fG9SwssUAZt42nB_-a_kGymmNzePYyrvGyMo-WmbHZltCsFT" alt="Cinematic Film Frame" class="w-full h-full object-cover object-center scale-105 transform hover:scale-100 transition-transform duration-1000 ease-out" />
+    </div>
+    
+    <!-- Gradient Overlays for High-Contrast Text Legibility -->
+    <div class="absolute inset-0 z-0 bg-gradient-to-r from-obsidian via-obsidian/85 to-transparent"></div>
+    <div class="absolute inset-0 z-0 bg-gradient-to-t from-obsidian via-transparent to-obsidian/70"></div>
+
+    <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full my-auto py-12">
+      
+      <!-- Eyebrow Badge -->
+      <div class="inline-flex items-center gap-3 mb-6">
+        <div class="w-8 h-[1px] bg-gold"></div>
+        <p class="text-xs uppercase tracking-ultrawide font-sans font-medium text-gold">
+          VIDEO EDITOR · VISUAL STORYTELLER
+        </p>
+      </div>
+
+      <!-- Main Headline (Oversized Editorial Typography + Serif Italic Highlight) -->
+      <h1 class="font-sans font-medium text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] tracking-tight text-warmWhite leading-[1.08] max-w-5xl mb-8">
+        I TURN RAW FOOTAGE INTO <span class="font-serif italic font-normal text-gold pl-1 tracking-normal hover:text-gold-hover transition-colors">FEELING.</span>
+      </h1>
+
+      <!-- Supporting Editorial Subtitle -->
+      <p class="text-base sm:text-lg md:text-xl text-mutedGray max-w-2xl font-light leading-relaxed mb-10">
+        Crafting cinematic stories, high-retention reels, and visuals that make people stop scrolling.
+      </p>
+
+      <!-- Action Buttons + Floating Metadata -->
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5 sm:gap-8">
+        <a href="#work" class="group inline-flex items-center gap-3 px-8 py-4 bg-warmWhite text-obsidian font-sans font-medium text-xs tracking-cinematic uppercase hover:bg-gold transition-all duration-300">
+          <span>Explore My Work</span>
+          <span class="transform group-hover:translate-x-1 group-hover:translate-y-1 transition-transform duration-200">↘</span>
+        </a>
+        
+        <a href="#contact" class="group inline-flex items-center gap-3 px-8 py-4 border border-subtleBorder text-warmWhite font-sans font-medium text-xs tracking-cinematic uppercase hover:border-gold hover:text-gold transition-all duration-300 bg-obsidian/40 backdrop-blur-sm">
+          <span>Let’s Work Together</span>
+          <span class="transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-200">↗</span>
+        </a>
+
+        <!-- Floating Tag / Intention -->
+        <div class="mt-4 sm:mt-0 sm:ml-auto inline-flex items-center gap-2 px-3 py-1.5 border border-subtleBorder/70 bg-charcoal/50 rounded text-[11px] font-sans tracking-widest text-mutedGray uppercase">
+          <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>
+          <span>Edited with Intention.</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Scroll Indicator at Bottom -->
+    <div class="relative z-10 max-w-7xl mx-auto px-6 md:px-12 w-full flex items-center justify-between text-mutedGray/80 pt-8 border-t border-subtleBorder/40">
+      <div class="flex items-center gap-3 text-[11px] font-sans tracking-ultrawide uppercase text-mutedGray">
+        <span class="inline-block w-2 h-2 rounded-full border border-gold/70 animate-bounce"></span>
+        <span>Scroll to Explore</span>
+      </div>
+      <div class="text-[11px] font-sans tracking-cinematic uppercase text-mutedGray/60 hidden sm:block">
+        MUMBAI · WORLDWIDE AVAILABLE
+      </div>
+    </div>
+  </section>
+
+
+  <!-- SECTION 2 — SELECTED WORK -->
+  <section id="work" class="py-28 md:py-36 px-6 md:px-12 max-w-7xl mx-auto border-b border-subtleBorder">
+    
+    <!-- Section Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 md:mb-24 gap-6">
+      <div>
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-xs font-sans tracking-ultrawide text-gold uppercase">PORTFOLIO REEL</span>
+          <span class="w-12 h-[1px] bg-subtleBorder"></span>
+        </div>
+        <h2 class="font-sans text-3xl sm:text-5xl md:text-6xl font-normal tracking-tight text-warmWhite">
+          SELECTED WORK.
+        </h2>
+      </div>
+      <p class="text-mutedGray text-sm md:text-base max-w-md font-light leading-relaxed">
+        Three projects. Three different stories. One obsession with the details.
+      </p>
+    </div>
+
+    <!-- Featured Projects Grid (Asymmetric & Cinematic) -->
+    <div class="space-y-16 md:space-y-24">
+
+      <!-- PROJECT 01 (Hero Featured Wide) -->
+      <article class="group relative bg-surface-card border border-subtleBorder hover:border-gold/60 transition-all duration-500 rounded-sm overflow-hidden" onclick="openModal('AFTER HOURS', 'CINEMATIC EDIT', 'Atmosphere, rhythm, and storytelling through every frame.', 'https://lh3.googleusercontent.com/aida-public/AB6AXuB4S836Wtwn2AzAH6nnfroGn0l43zDjCJsYl6x4Ivvbq7O77PJV1EgJKJ0vPYVJFa_A7tz6m8CXfCVsUUu5s4ZRGSuaEP0azdyk_YHMrmldrY0ZhZo2MhLOo0FKGK-viFbDkiczczHg3g4dc2CGaysouD39CSLwQhtJ2TMDOvriZJtwJp548gH3Xt1BgOlCh2Sgu8hd1vo_50xYR7yVHH12IW9HVliR1y9zXPSCw9b_3HO70ItuDRA1', '03:42', '2024')">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-0">
+          
+          <!-- Thumbnail Area (Dominant 16:9 cinematic aspect) -->
+          <div class="lg:col-span-8 relative aspect-video overflow-hidden bg-charcoal cursor-pointer">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuB4S836Wtwn2AzAH6nnfroGn0l43zDjCJsYl6x4Ivvbq7O77PJV1EgJKJ0vPYVJFa_A7tz6m8CXfCVsUUu5s4ZRGSuaEP0azdyk_YHMrmldrY0ZhZo2MhLOo0FKGK-viFbDkiczczHg3g4dc2CGaysouD39CSLwQhtJ2TMDOvriZJtwJp548gH3Xt1BgOlCh2Sgu8hd1vo_50xYR7yVHH12IW9HVliR1y9zXPSCw9b_3HO70ItuDRA1" alt="After Hours Film Still" class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700 ease-out" />
+            
+            <!-- Video Overlay with Play Button & Grain -->
+            <div class="absolute inset-0 bg-obsidian/20 group-hover:bg-obsidian/5 transition-colors duration-300"></div>
+            
+            <!-- Custom Center Play Icon Button -->
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-16 h-16 md:w-20 md:h-20 rounded-full border border-warmWhite/40 bg-obsidian/70 backdrop-blur-md flex items-center justify-center play-glow group-hover:scale-110 group-hover:border-gold group-hover:bg-gold/90 transition-all duration-300">
+                <svg class="w-6 h-6 md:w-7 md:h-7 text-warmWhite group-hover:text-obsidian ml-1 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Badges -->
+            <div class="absolute top-4 left-4 px-3 py-1 bg-obsidian/80 backdrop-blur-md border border-subtleBorder text-[10px] font-sans tracking-cinematic uppercase text-gold">
+              FEATURED EDIT
+            </div>
+            <div class="absolute bottom-4 right-4 px-2.5 py-1 bg-obsidian/85 backdrop-blur-md border border-subtleBorder text-[11px] font-mono text-warmWhite/80">
+              03:42
+            </div>
+          </div>
+
+          <!-- Project Details Meta -->
+          <div class="lg:col-span-4 p-8 md:p-12 flex flex-col justify-between border-t lg:border-t-0 lg:border-l border-subtleBorder bg-surface-card">
+            <div>
+              <div class="flex items-center justify-between text-xs font-mono text-mutedGray mb-6">
+                <span class="text-gold tracking-widest text-sm">01 / 03</span>
+                <span class="tracking-widest">CINEMATIC EDIT · 2024</span>
+              </div>
+
+              <h3 class="font-sans text-2xl sm:text-3xl md:text-4xl text-warmWhite mb-4 group-hover:text-gold transition-colors duration-300">
+                AFTER HOURS
+              </h3>
+
+              <p class="text-mutedGray text-sm leading-relaxed mb-6 font-light">
+                Atmosphere, rhythm, and storytelling through every frame. A neo-noir study exploring ambient urban solitude, paced with intentional breath and rhythmic match-cuts.
+              </p>
+
+              <!-- Tags -->
+              <div class="flex flex-wrap gap-2 mb-8">
+                <span class="text-[10px] font-sans tracking-wider uppercase px-2.5 py-1 bg-charcoal border border-subtleBorder text-warmWhite/70">Pacing & Flow</span>
+                <span class="text-[10px] font-sans tracking-wider uppercase px-2.5 py-1 bg-charcoal border border-subtleBorder text-warmWhite/70">Film Emulation</span>
+                <span class="text-[10px] font-sans tracking-wider uppercase px-2.5 py-1 bg-charcoal border border-subtleBorder text-warmWhite/70">Sound Design</span>
+              </div>
+            </div>
+
+            <div class="pt-6 border-t border-subtleBorder flex items-center justify-between">
+              <span class="text-xs uppercase font-sans tracking-cinematic text-mutedGray group-hover:text-gold transition-colors">
+                Watch Film ↗
+              </span>
+              <span class="text-xs text-mutedGray/50 font-mono">DaVinci Resolve / Premiere</span>
+            </div>
+          </div>
+
+        </div>
+      </article>
+
+
+      <!-- PROJECTS 02 & 03 (Two-Column Balanced Grid) -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+        
+        <!-- PROJECT 02 -->
+        <article class="group bg-surface-card border border-subtleBorder hover:border-gold/60 transition-all duration-500 rounded-sm overflow-hidden flex flex-col justify-between" onclick="openModal('BUILT TO MOVE', 'BRAND / COMMERCIAL', 'A visual experience designed to capture attention.', 'https://lh3.googleusercontent.com/aida-public/AB6AXuCo4ZFkkE7QMuXZBckP-Z92ws1Gtv1wJzxmz9zrCLJd7zTIShJQ8R5s1Nf5cKVGXrUce9JWapzW3pgl-tERzM5T8FC7fkLP4h2jgUWvqz61TOxepCeY43tBXzBmnd2ea9yYYC-Y0__Ox51VMBo3fOscrg-TpZGeP9fHtuax8EunWGcTMGQqEpskdW5coEOHEWxJ_0w1-4qjHv4pzV25YftDhrZsJn8KLTYoQ7O4kyXprw6ANUXCTFRh', '01:15', '2024')">
+          <div>
+            <div class="relative aspect-video overflow-hidden bg-charcoal cursor-pointer">
+              <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCo4ZFkkE7QMuXZBckP-Z92ws1Gtv1wJzxmz9zrCLJd7zTIShJQ8R5s1Nf5cKVGXrUce9JWapzW3pgl-tERzM5T8FC7fkLP4h2jgUWvqz61TOxepCeY43tBXzBmnd2ea9yYYC-Y0__Ox51VMBo3fOscrg-TpZGeP9fHtuax8EunWGcTMGQqEpskdW5coEOHEWxJ_0w1-4qjHv4pzV25YftDhrZsJn8KLTYoQ7O4kyXprw6ANUXCTFRh" alt="Built To Move Commercial Frame" class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700 ease-out" />
+              <div class="absolute inset-0 bg-obsidian/20 group-hover:bg-obsidian/5 transition-colors"></div>
+              
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-14 h-14 rounded-full border border-warmWhite/40 bg-obsidian/70 backdrop-blur-md flex items-center justify-center play-glow group-hover:scale-110 group-hover:border-gold group-hover:bg-gold/90 transition-all duration-300">
+                  <svg class="w-5 h-5 text-warmWhite group-hover:text-obsidian ml-0.5 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="absolute bottom-3 right-3 px-2 py-0.5 bg-obsidian/85 backdrop-blur-md border border-subtleBorder text-[10px] font-mono text-warmWhite/80">
+                01:15
+              </div>
+            </div>
+
+            <div class="p-6 md:p-8">
+              <div class="flex items-center justify-between text-xs font-mono text-mutedGray mb-4">
+                <span class="text-gold tracking-widest">02 / 03</span>
+                <span class="tracking-widest">BRAND / COMMERCIAL</span>
+              </div>
+              <h3 class="font-sans text-xl sm:text-2xl text-warmWhite mb-3 group-hover:text-gold transition-colors duration-300">
+                BUILT TO MOVE
+              </h3>
+              <p class="text-mutedGray text-sm leading-relaxed font-light mb-6">
+                A visual experience designed to capture attention. Speed ramping, dynamic kinetic cutting, and hyper-precise sound architecture crafted for brand impact.
+              </p>
+            </div>
+          </div>
+
+          <div class="px-6 md:px-8 pb-6 pt-4 border-t border-subtleBorder flex items-center justify-between">
+            <span class="text-xs uppercase font-sans tracking-cinematic text-mutedGray group-hover:text-gold transition-colors">
+              Watch Film ↗
+            </span>
+            <span class="text-xs text-mutedGray/50 font-mono">After Effects / Sound FX</span>
+          </div>
+        </article>
+
+
+        <!-- PROJECT 03 -->
+        <article class="group bg-surface-card border border-subtleBorder hover:border-gold/60 transition-all duration-500 rounded-sm overflow-hidden flex flex-col justify-between" onclick="openModal('BEHIND THE FRAME', 'SOCIAL MEDIA REEL', 'Short-form storytelling with a cinematic edge.', 'https://lh3.googleusercontent.com/aida-public/AB6AXuCjrcNlHvkAfVH8lEQZyJ6LvyIa8H-IRtdCczNkYmQYyKYLWFJC820wv662yVVJ2cQSThq9NN9-KQkyH72RDd0Lb1te7gL9KB4xr7nUJGRHFpUIaupzzgChJyoQvUQL4lQoG34zH38RL-3sDfLzrB5ASW8M39QmCDroX87xsTnVwNJuIvhxSKDvuTZhgvmgG4R2Agn71O4JVDR_bfcGep3xYFxUHS9RvMc8RC2GBsqD04vNOeyCXQj6', '00:58', '2024')">
+          <div>
+            <div class="relative aspect-video overflow-hidden bg-charcoal cursor-pointer">
+              <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCjrcNlHvkAfVH8lEQZyJ6LvyIa8H-IRtdCczNkYmQYyKYLWFJC820wv662yVVJ2cQSThq9NN9-KQkyH72RDd0Lb1te7gL9KB4xr7nUJGRHFpUIaupzzgChJyoQvUQL4lQoG34zH38RL-3sDfLzrB5ASW8M39QmCDroX87xsTnVwNJuIvhxSKDvuTZhgvmgG4R2Agn71O4JVDR_bfcGep3xYFxUHS9RvMc8RC2GBsqD04vNOeyCXQj6" alt="Behind the Frame Reel Frame" class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-700 ease-out" />
+              <div class="absolute inset-0 bg-obsidian/20 group-hover:bg-obsidian/5 transition-colors"></div>
+              
+              <div class="absolute inset-0 flex items-center justify-center">
+                <div class="w-14 h-14 rounded-full border border-warmWhite/40 bg-obsidian/70 backdrop-blur-md flex items-center justify-center play-glow group-hover:scale-110 group-hover:border-gold group-hover:bg-gold/90 transition-all duration-300">
+                  <svg class="w-5 h-5 text-warmWhite group-hover:text-obsidian ml-0.5 transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M8 5v14l11-7z"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="absolute bottom-3 right-3 px-2 py-0.5 bg-obsidian/85 backdrop-blur-md border border-subtleBorder text-[10px] font-mono text-warmWhite/80">
+                00:58
+              </div>
+            </div>
+
+            <div class="p-6 md:p-8">
+              <div class="flex items-center justify-between text-xs font-mono text-mutedGray mb-4">
+                <span class="text-gold tracking-widest">03 / 03</span>
+                <span class="tracking-widest">SOCIAL MEDIA REEL</span>
+              </div>
+              <h3 class="font-sans text-xl sm:text-2xl text-warmWhite mb-3 group-hover:text-gold transition-colors duration-300">
+                BEHIND THE FRAME
+              </h3>
+              <p class="text-mutedGray text-sm leading-relaxed font-light mb-6">
+                Short-form storytelling with a cinematic edge. Converting raw production behind-the-scenes into high-retention vertical narratives that maintain high production value.
+              </p>
+            </div>
+          </div>
+
+          <div class="px-6 md:px-8 pb-6 pt-4 border-t border-subtleBorder flex items-center justify-between">
+            <span class="text-xs uppercase font-sans tracking-cinematic text-mutedGray group-hover:text-gold transition-colors">
+              Watch Film ↗
+            </span>
+            <span class="text-xs text-mutedGray/50 font-mono">Premiere Pro / 9:16 Reframe</span>
+          </div>
+        </article>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- SECTION 3 — MY CREATIVE APPROACH -->
+  <section id="approach" class="py-28 md:py-36 bg-charcoal border-b border-subtleBorder relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 md:px-12">
+      
+      <!-- Headline & Philosophy -->
+      <div class="max-w-4xl mb-20 md:mb-28">
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-xs font-sans tracking-ultrawide text-gold uppercase">PHILOSOPHY</span>
+          <span class="w-12 h-[1px] bg-subtleBorder"></span>
+        </div>
+        <h2 class="font-sans text-3xl sm:text-5xl md:text-6xl text-warmWhite font-light tracking-tight leading-tight mb-8">
+          GOOD EDITING ISN’T <br class="hidden sm:inline">JUST CUTTING.
+        </h2>
+        <p class="text-lg md:text-2xl text-mutedGray font-serif italic max-w-2xl leading-relaxed">
+          “It’s knowing what to show, what to hide, when to pause, and when to let the moment speak.”
+        </p>
+      </div>
+
+      <!-- Three Creative Principles in a Clean Minimal Horizontal Layout -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 pt-12 border-t border-subtleBorder">
+        
+        <!-- Principle 01 -->
+        <div class="group pr-4">
+          <div class="text-gold font-mono text-sm tracking-widest mb-6 flex items-center gap-2">
+            <span>01</span>
+            <span class="w-8 h-[1px] bg-gold/40 group-hover:w-12 transition-all duration-300"></span>
+          </div>
+          <h3 class="font-sans text-xl text-warmWhite tracking-wide uppercase mb-3 group-hover:text-gold transition-colors">
+            STORY FIRST
+          </h3>
+          <p class="text-mutedGray text-sm md:text-base leading-relaxed font-light">
+            Every cut serves the story. Every frame has a purpose. Flashy transitions mean nothing if the emotional core does not resonate.
+          </p>
+        </div>
+
+        <!-- Principle 02 -->
+        <div class="group pr-4">
+          <div class="text-gold font-mono text-sm tracking-widest mb-6 flex items-center gap-2">
+            <span>02</span>
+            <span class="w-8 h-[1px] bg-gold/40 group-hover:w-12 transition-all duration-300"></span>
+          </div>
+          <h3 class="font-sans text-xl text-warmWhite tracking-wide uppercase mb-3 group-hover:text-gold transition-colors">
+            RHYTHM &amp; RETENTION
+          </h3>
+          <p class="text-mutedGray text-sm md:text-base leading-relaxed font-light">
+            Pacing, sound, and timing work together to keep people watching. Controlling momentum creates a hypnotic viewer engagement.
+          </p>
+        </div>
+
+        <!-- Principle 03 -->
+        <div class="group pr-4">
+          <div class="text-gold font-mono text-sm tracking-widest mb-6 flex items-center gap-2">
+            <span>03</span>
+            <span class="w-8 h-[1px] bg-gold/40 group-hover:w-12 transition-all duration-300"></span>
+          </div>
+          <h3 class="font-sans text-xl text-warmWhite tracking-wide uppercase mb-3 group-hover:text-gold transition-colors">
+            DETAILS MATTER
+          </h3>
+          <p class="text-mutedGray text-sm md:text-base leading-relaxed font-light">
+            Color grading, delicate foley, ambient room tone, and microscopic frame trims transform raw clips into tactile cinema.
+          </p>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- SECTION 4 — TOOLS I USE -->
+  <section id="tools" class="py-28 md:py-36 px-6 md:px-12 max-w-7xl mx-auto border-b border-subtleBorder">
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
+      <div>
+        <div class="flex items-center gap-3 mb-3">
+          <span class="text-xs font-sans tracking-ultrawide text-gold uppercase">TECHNICAL STACK</span>
+          <span class="w-12 h-[1px] bg-subtleBorder"></span>
+        </div>
+        <h2 class="font-sans text-3xl sm:text-5xl font-normal tracking-tight text-warmWhite">
+          MY CREATIVE TOOLKIT.
+        </h2>
+      </div>
+      <p class="text-mutedGray text-sm md:text-base max-w-md font-light">
+        Tools are only as good as the story you create with them.
+      </p>
+    </div>
+
+    <!-- Software Showcase Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+      
+      <!-- Premiere Pro -->
+      <div class="group p-6 bg-surface-card border border-subtleBorder hover:border-gold/60 transition-all duration-300 rounded-sm">
+        <div class="w-12 h-12 rounded bg-[#090014] border border-[#9999FF]/30 flex items-center justify-center font-bold text-sm text-[#9999FF] mb-6 group-hover:scale-105 transition-transform font-mono">
+          Pr
+        </div>
+        <h3 class="font-sans font-medium text-warmWhite text-base mb-1 group-hover:text-gold transition-colors">
+          Adobe Premiere Pro
+        </h3>
+        <p class="text-xs text-gold uppercase tracking-wider font-mono mb-3">
+          Video Editing
+        </p>
+        <p class="text-xs text-mutedGray leading-relaxed font-light">
+          Primary NLE for long-form assembly, multi-cam sync, and rough cut narrative flow.
+        </p>
+      </div>
+
+      <!-- After Effects -->
+      <div class="group p-6 bg-surface-card border border-subtleBorder hover:border-gold/60 transition-all duration-300 rounded-sm">
+        <div class="w-12 h-12 rounded bg-[#100021] border border-[#D291FF]/30 flex items-center justify-center font-bold text-sm text-[#D291FF] mb-6 group-hover:scale-105 transition-transform font-mono">
+          Ae
+        </div>
+        <h3 class="font-sans font-medium text-warmWhite text-base mb-1 group-hover:text-gold transition-colors">
+          After Effects
+        </h3>
+        <p class="text-xs text-gold uppercase tracking-wider font-mono mb-3">
+          Motion Graphics
+        </p>
+        <p class="text-xs text-mutedGray leading-relaxed font-light">
+          Kinetic titles, visual effects clean-up, tracking, and bespoke compositing.
+        </p>
+      </div>
+
+      <!-- DaVinci Resolve -->
+      <div class="group p-6 bg-surface-card border border-subtleBorder hover:border-gold/60 transition-all duration-300 rounded-sm">
+        <div class="w-12 h-12 rounded bg-[#1A1408] border border-[#FF8C00]/30 flex items-center justify-center font-bold text-sm text-[#FFB347] mb-6 group-hover:scale-105 transition-transform font-mono">
+          Da
+        </div>
+        <h3 class="font-sans font-medium text-warmWhite text-base mb-1 group-hover:text-gold transition-colors">
+          DaVinci Resolve
+        </h3>
+        <p class="text-xs text-gold uppercase tracking-wider font-mono mb-3">
+          Color Grading
+        </p>
+        <p class="text-xs text-mutedGray leading-relaxed font-light">
+          ACES color management, custom film look design, and moody atmospheric grading.
+        </p>
+      </div>
+
+      <!-- Photoshop -->
+      <div class="group p-6 bg-surface-card border border-subtleBorder hover:border-gold/60 transition-all duration-300 rounded-sm">
+        <div class="w-12 h-12 rounded bg-[#00182E] border border-[#31A8FF]/30 flex items-center justify-center font-bold text-sm text-[#31A8FF] mb-6 group-hover:scale-105 transition-transform font-mono">
+          Ps
+        </div>
+        <h3 class="font-sans font-medium text-warmWhite text-base mb-1 group-hover:text-gold transition-colors">
+          Adobe Photoshop
+        </h3>
+        <p class="text-xs text-gold uppercase tracking-wider font-mono mb-3">
+          Visual Design
+        </p>
+        <p class="text-xs text-mutedGray leading-relaxed font-light">
+          Key art generation, high-CTR YouTube thumbnails, and raster asset prep.
+        </p>
+      </div>
+
+      <!-- Audition -->
+      <div class="group p-6 bg-surface-card border border-subtleBorder hover:border-gold/60 transition-all duration-300 rounded-sm">
+        <div class="w-12 h-12 rounded bg-[#001D1A] border border-[#00E5C9]/30 flex items-center justify-center font-bold text-sm text-[#00E5C9] mb-6 group-hover:scale-105 transition-transform font-mono">
+          Au
+        </div>
+        <h3 class="font-sans font-medium text-warmWhite text-base mb-1 group-hover:text-gold transition-colors">
+          Adobe Audition
+        </h3>
+        <p class="text-xs text-gold uppercase tracking-wider font-mono mb-3">
+          Audio &amp; Sound Design
+        </p>
+        <p class="text-xs text-mutedGray leading-relaxed font-light">
+          Dialogue cleanup, stereo spatial mixing, and foley enhancement.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- SECTION 5 — ABOUT ME -->
+  <section id="about" class="py-28 md:py-36 px-6 md:px-12 max-w-7xl mx-auto border-b border-subtleBorder">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+      
+      <!-- Left: Portrait Photography in Cinematic Environment -->
+      <div class="lg:col-span-5 relative">
+        <div class="relative aspect-[3/4] overflow-hidden rounded-sm border border-subtleBorder group">
+          <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLcwddCEZHvD-Fi65sGGk_Lv0LCMCAbHG_3dx6mjR-7bycATXMRK95Mwq85j5zl9qN_kBDfKA2s3tPPSF_QcTZX2_sDD2WN4SUQ8om8EWRKQUQnW3uS2ZwWivzesuwzIGY7Fepde-Ir55czq2R3rIWvZan3O9-sMClsWQxYEUzjed3yk_Ma9Unhrq4yfwwRQThyShbfc_FAiCzVVI0uKGq0l1pVK9svK4_yAPeFYAdco7mY_0Fa0dA" alt="Shubhankar Portrait" class="w-full h-full object-cover object-center grayscale hover:grayscale-0 contrast-110 transition-all duration-700 ease-out" />
+          <div class="absolute inset-0 bg-gradient-to-t from-obsidian via-transparent to-transparent opacity-80"></div>
+          
+          <!-- Subtle Caption -->
+          <div class="absolute bottom-5 left-5 right-5 flex items-center justify-between text-[11px] font-mono text-mutedGray">
+            <span>IN THE SUITE · 2024</span>
+            <span class="text-gold uppercase tracking-wider">REPLACEABLE PORTRAIT</span>
+          </div>
+        </div>
+        <!-- Decorative subtle frame border -->
+        <div class="absolute -bottom-3 -right-3 w-24 h-24 border-r border-b border-gold/40 pointer-events-none hidden sm:block"></div>
+      </div>
+
+      <!-- Right: Personal Bio & Narrative -->
+      <div class="lg:col-span-7">
+        
+        <div class="flex items-center gap-3 mb-4">
+          <span class="text-xs font-sans tracking-ultrawide text-gold uppercase">BEHIND THE EDITS</span>
+          <span class="w-12 h-[1px] bg-subtleBorder"></span>
+        </div>
+
+        <h2 class="font-sans text-3xl sm:text-5xl md:text-5xl font-normal text-warmWhite tracking-tight mb-8">
+          HEY, I'M SHUBHANKAR.
+        </h2>
+
+        <div class="space-y-6 text-mutedGray text-base sm:text-lg font-light leading-relaxed">
+          <p>
+            I’m a video editor and aspiring filmmaker who loves turning ordinary footage into stories people can feel. I’m obsessed with visual storytelling, editing psychology, cinematic details, and the little decisions that make a video memorable.
+          </p>
+          <p>
+            I’m constantly experimenting, learning, and pushing myself to become a better storyteller — one frame at a time.
+          </p>
+          <p class="text-warmWhite font-medium text-lg font-serif italic">
+            “For me, editing isn’t just about making videos look good. It’s about making people feel something.”
+          </p>
+        </div>
+
+        <!-- 3 Personal Meta Details -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-10 mt-10 border-t border-subtleBorder">
+          <div>
+            <p class="text-[11px] font-mono text-mutedGray/70 uppercase tracking-wider mb-1">Focus</p>
+            <p class="text-sm font-sans text-warmWhite font-medium">Cinematic Editing & Short-Form Content</p>
+          </div>
+          <div>
+            <p class="text-[11px] font-mono text-mutedGray/70 uppercase tracking-wider mb-1">Currently Exploring</p>
+            <p class="text-sm font-sans text-warmWhite font-medium">Filmmaking & Visual Storytelling</p>
+          </div>
+          <div>
+            <p class="text-[11px] font-mono text-mutedGray/70 uppercase tracking-wider mb-1">Based In</p>
+            <p class="text-sm font-sans text-warmWhite font-medium">India (Remote Worldwide)</p>
+          </div>
+        </div>
+
+        <!-- Text link -->
+        <div class="mt-10">
+          <a href="#contact" class="inline-flex items-center gap-2 text-xs font-sans uppercase tracking-cinematic text-gold hover:text-warmWhite transition-colors duration-200 group">
+            <span>More About My Journey</span>
+            <span class="transform group-hover:translate-x-1 transition-transform">↗</span>
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- SECTION 6 — LET'S CREATE SOMETHING (Closing Section) -->
+  <section id="contact" class="py-32 md:py-44 px-6 md:px-12 bg-charcoal relative overflow-hidden">
+    
+    <!-- Ambient Radial Glow -->
+    <div class="absolute bottom-0 right-1/4 w-96 h-96 bg-gold/5 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+      
+      <p class="text-xs uppercase font-sans tracking-ultrawide text-gold mb-6 font-medium">
+        HAVE A PROJECT IN MIND?
+      </p>
+
+      <h2 class="font-sans text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-warmWhite font-normal leading-[1.05] mb-8">
+        LET’S MAKE SOMETHING <br>
+        <span class="font-serif italic font-normal text-gold hover:text-gold-hover transition-colors">WORTH WATCHING.</span>
+      </h2>
+
+      <p class="text-base sm:text-xl text-mutedGray max-w-2xl mx-auto font-light leading-relaxed mb-12">
+        Working with creators, personal brands, and businesses that care about great storytelling.
+      </p>
+
+      <!-- Primary Big Action Button -->
+      <div class="mb-16">
+        <a href="mailto:shubhankar.edits@example.com" class="group inline-flex items-center gap-4 px-10 py-5 bg-warmWhite text-obsidian font-sans font-medium text-xs sm:text-sm tracking-cinematic uppercase hover:bg-gold transition-all duration-300 shadow-2xl">
+          <span>Let’s Talk About Your Project</span>
+          <span class="text-base transform group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-200">↗</span>
+        </a>
+      </div>
+
+      <!-- Contact Options Links -->
+      <div class="pt-12 border-t border-subtleBorder max-w-2xl mx-auto">
+        <p class="text-xs font-mono text-mutedGray/60 uppercase tracking-widest mb-6">Direct Channels</p>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <a href="mailto:shubhankar.edits@example.com" class="p-4 bg-obsidian/60 border border-subtleBorder hover:border-gold/60 text-xs font-sans tracking-wider uppercase text-warmWhite hover:text-gold transition-all">
+            Email
+          </a>
+          <a href="https://instagram.com" target="_blank" class="p-4 bg-obsidian/60 border border-subtleBorder hover:border-gold/60 text-xs font-sans tracking-wider uppercase text-warmWhite hover:text-gold transition-all">
+            Instagram
+          </a>
+          <a href="https://linkedin.com" target="_blank" class="p-4 bg-obsidian/60 border border-subtleBorder hover:border-gold/60 text-xs font-sans tracking-wider uppercase text-warmWhite hover:text-gold transition-all">
+            LinkedIn
+          </a>
+          <a href="https://whatsapp.com" target="_blank" class="p-4 bg-obsidian/60 border border-subtleBorder hover:border-gold/60 text-xs font-sans tracking-wider uppercase text-warmWhite hover:text-gold transition-all">
+            WhatsApp
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- FOOTER -->
+  <footer class="py-12 px-6 md:px-12 border-t border-subtleBorder bg-obsidian">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 text-xs text-mutedGray font-mono">
+      
+      <div class="text-center md:text-left">
+        <p class="font-sans uppercase tracking-widest text-warmWhite text-[11px] mb-1">
+          DESIGNED WITH INTENTION. EDITED WITH FEELING.
+        </p>
+        <p class="text-[10px] text-mutedGray/60">
+          © 2024 Shubhankar. All cinematic rights reserved.
+        </p>
+      </div>
+
+      <div class="flex items-center gap-8">
+        <span class="text-[10px] tracking-wider uppercase text-mutedGray/50 hidden sm:inline">Obsidian #0B0B0D · Gold #C6A875</span>
+        <a href="#hero" class="flex items-center gap-2 hover:text-gold transition-colors uppercase tracking-widest text-[11px]">
+          <span>Back to Top</span>
+          <span>↑</span>
+        </a>
+      </div>
+
+    </div>
+  </footer>
+
+
+  <!-- INTERACTIVE CINEMATIC VIDEO MODAL -->
+  <div id="videoModal" class="fixed inset-0 z-[100] bg-obsidian/95 backdrop-blur-xl hidden flex items-center justify-center p-4 sm:p-8">
+    <div class="relative w-full max-w-5xl bg-surface-card border border-subtleBorder rounded-sm overflow-hidden shadow-2xl">
+      
+      <!-- Modal Top Bar -->
+      <div class="px-6 py-4 border-b border-subtleBorder flex items-center justify-between bg-charcoal">
+        <div class="flex items-center gap-3">
+          <span class="w-2.5 h-2.5 rounded-full bg-gold animate-pulse"></span>
+          <span id="modalCategory" class="text-[10px] font-mono tracking-widest uppercase text-gold">CATEGORY</span>
+          <span class="text-mutedGray/40 text-xs">|</span>
+          <h4 id="modalTitle" class="text-sm font-sans tracking-wide text-warmWhite font-semibold">PROJECT TITLE</h4>
+        </div>
+        
+        <button onclick="closeModal()" class="text-mutedGray hover:text-warmWhite text-xs font-mono uppercase tracking-widest flex items-center gap-1.5 px-3 py-1 rounded border border-subtleBorder hover:border-gold transition-all">
+          <span>Close</span>
+          <span class="text-sm">✕</span>
+        </button>
+      </div>
+
+      <!-- Cinematic Modal Video Player Area -->
+      <div class="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
+        <img id="modalPoster" src="" alt="Video Frame" class="w-full h-full object-cover opacity-70 filter brightness-90">
+        
+        <!-- Center simulated playback UI -->
+        <div class="absolute inset-0 flex flex-col items-center justify-center bg-obsidian/40">
+          <div class="w-20 h-20 rounded-full border border-gold bg-gold/90 text-obsidian flex items-center justify-center cursor-pointer hover:scale-105 transition-transform shadow-2xl">
+            <svg class="w-8 h-8 ml-1" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
+          <p class="text-xs font-mono uppercase tracking-widest text-warmWhite/80 mt-4">
+            Click to stream in 4K ProRes
+          </p>
+        </div>
+
+        <!-- Video HUD Overlay -->
+        <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black via-black/80 to-transparent flex items-center justify-between text-xs font-mono text-warmWhite/80">
+          <div class="flex items-center gap-4">
+            <span class="text-gold">00:00:00:00</span>
+            <span class="text-mutedGray">/</span>
+            <span id="modalDuration">03:42:00</span>
+          </div>
+          <div class="flex items-center gap-4">
+            <span class="text-[10px] px-2 py-0.5 border border-subtleBorder bg-charcoal text-mutedGray">24 FPS</span>
+            <span class="text-[10px] px-2 py-0.5 border border-subtleBorder bg-charcoal text-mutedGray">REC 709</span>
+            <span id="modalYear" class="text-gold">2024</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Modal Bottom Meta -->
+      <div class="p-6 bg-charcoal border-t border-subtleBorder">
+        <p id="modalDesc" class="text-sm text-mutedGray font-light max-w-3xl leading-relaxed">
+          Description goes here.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Vanilla JS for Modal & Interactivity -->
+  <script>
+    function openModal(title, category, desc, posterUrl, duration, year) {
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalCategory').innerText = category;
+      document.getElementById('modalDesc').innerText = desc;
+      document.getElementById('modalPoster').src = posterUrl;
+      document.getElementById('modalDuration').innerText = duration;
+      document.getElementById('modalYear').innerText = year;
+      
+      const modal = document.getElementById('videoModal');
+      modal.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('videoModal');
+      modal.classList.add('hidden');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    // Close on clicking backdrop
+    document.getElementById('videoModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        closeModal();
+      }
+    });
+  </script>
+
+</body>
+</html>
